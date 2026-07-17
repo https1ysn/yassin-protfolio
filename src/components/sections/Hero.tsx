@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Download, Mail, MessageCircle, Phone } from "lucide-react";
 import { useContent } from "@/components/ContentContext";
+import { useT } from "@/components/I18nContext";
 import Particles from "@/components/Particles";
 import MagneticButton from "@/components/ui/MagneticButton";
 
@@ -61,6 +62,7 @@ function StaggeredWord({ word, delay, className = "" }: { word: string; delay: n
 
 export default function Hero() {
   const { profile, settings } = useContent();
+  const t = useT();
   const typed = useTyping(profile.typingRoles);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -135,23 +137,23 @@ export default function Hero() {
               className="btn-primary group inline-flex items-center gap-2.5 rounded-full px-6 py-3.5 text-sm font-semibold text-white"
             >
               <Download size={16} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
-              Download CV
+              {t("hero.downloadCV")}
             </MagneticButton>
             <MagneticButton
               href={`mailto:${profile.email}`}
               className="btn-ghost inline-flex items-center gap-2.5 rounded-full px-6 py-3.5 text-sm font-semibold text-white"
             >
               <Mail size={16} />
-              Hire Me
+              {t("hero.hireMe")}
             </MagneticButton>
             <MagneticButton
               href="#projects"
               className="link-underline group inline-flex items-center gap-2 px-1 py-3.5 text-sm font-semibold text-muted hover:text-white"
             >
-              View Projects
+              {t("hero.viewProjects")}
               <ArrowRight
                 size={15}
-                className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+                className="transition-transform duration-300 ease-out group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
               />
             </MagneticButton>
           </motion.div>
@@ -173,7 +175,9 @@ export default function Hero() {
                 {s.icon}
               </a>
             ))}
-            <span className="ml-2 hidden text-xs text-muted/80 sm:block">Based in {profile.location}</span>
+            <span className="ms-2 hidden text-xs text-muted/80 sm:block">
+              {t("hero.basedIn")} {profile.location}
+            </span>
           </motion.div>
         </motion.div>
 
@@ -202,7 +206,7 @@ export default function Hero() {
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-base/85 via-transparent to-transparent" />
             <div className="glass absolute bottom-4 left-4 right-4 rounded-2xl px-4 py-3">
-              <p className="text-xs text-muted">Currently</p>
+              <p className="text-xs text-muted">{t("hero.currently")}</p>
               <p className="text-sm font-semibold">{profile.role}</p>
             </div>
           </div>
@@ -212,14 +216,14 @@ export default function Hero() {
             style={{ animationDelay: "-2s" }}
           >
             <p className="gradient-text font-display text-xl font-bold">2+</p>
-            <p className="text-[11px] text-muted">years experience</p>
+            <p className="text-[11px] text-muted">{t("hero.yearsExperience")}</p>
           </div>
           <div
             className="glass animate-float absolute -right-6 bottom-24 hidden rounded-2xl px-4 py-3 md:block"
             style={{ animationDelay: "-4s" }}
           >
             <p className="gradient-text font-display text-xl font-bold">5</p>
-            <p className="text-[11px] text-muted">certifications</p>
+            <p className="text-[11px] text-muted">{t("hero.certifications")}</p>
           </div>
         </motion.div>
         </motion.div>
@@ -228,7 +232,7 @@ export default function Hero() {
       {/* scroll hint — fades away as soon as scrolling starts */}
       <motion.a
         href="#about"
-        aria-label="Scroll to about section"
+        aria-label={t("hero.scrollToAbout")}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: BASE + 1.6, duration: 0.8 }}

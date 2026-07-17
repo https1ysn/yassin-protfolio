@@ -30,7 +30,7 @@ export async function getSiteContent(): Promise<SiteContent> {
 
     const [
       profileQ, heroQ, aboutQ, contactQ, settingsQ,
-      xpQ, eduQ, catQ, skillQ, softQ, langQ, projQ, svcQ, socialQ,
+      xpQ, eduQ, catQ, skillQ, softQ, langQ, projQ, svcQ, socialQ, certQ,
     ] = await Promise.all([
       db.from("profile").select("*").eq("id", 1).maybeSingle(),
       db.from("hero").select("*").eq("id", 1).maybeSingle(),
@@ -46,6 +46,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       db.from("projects").select("*").eq("published", true).order("sort_order", order),
       db.from("services").select("*").order("sort_order", order),
       db.from("social_links").select("*").order("sort_order", order),
+      db.from("certificates").select("*").order("sort_order", order),
     ]);
 
     const p = one(profileQ);
@@ -85,15 +86,18 @@ export async function getSiteContent(): Promise<SiteContent> {
       stats: (hero?.stats as SiteContent["stats"]) ?? fallbackContent.stats,
       aboutParagraphs: (about?.paragraphs as string[]) ?? fallbackContent.aboutParagraphs,
       strengths: (about?.strengths as SiteContent["strengths"]) ?? fallbackContent.strengths,
-      experience: rows(xpQ).map((e) => ({
-        role: e.role,
-        company: e.company,
-        period: e.period,
-        location: e.location,
-        summary: e.summary,
-        bullets: (e.bullets as string[]) ?? [],
-        tags: (e.tags as string[]) ?? [],
-      })),
+      experience: rows(xpQ)
+        .filter((e) => e.archived !== true)
+        .map((e) => ({
+          role: e.role,
+          company: e.company,
+          logo: e.logo_url ?? "",
+          period: e.period,
+          location: e.location,
+          summary: e.summary,
+          bullets: (e.bullets as string[]) ?? [],
+          tags: (e.tags as string[]) ?? [],
+        })),
       skillGroups: rows(catQ).map((c) => ({
         title: c.title,
         skills: skillsByCat
@@ -114,9 +118,20 @@ export async function getSiteContent(): Promise<SiteContent> {
         linkLabel:
           pr.link_label || (pr.live_url ? "View live" : pr.github_url ? "View code" : "Details on request"),
         link: pr.live_url || pr.github_url || "",
+        featured: pr.featured === true,
+        why: pr.long_description ?? "",
+        challenge: pr.challenge ?? "",
+        results: pr.results ?? "",
+        lessons: pr.lessons ?? "",
       })),
       services: rows(svcQ).map((sv) => ({ title: sv.title, text: sv.description })),
       education: rows(eduQ).map((ed) => ({ title: ed.title, org: ed.organization, meta: ed.meta })),
+      certificates: rows(certQ).map((c) => ({
+        title: c.title,
+        issuer: c.issuer,
+        date: c.date_label ?? "",
+        url: c.url ?? "",
+      })),
       socialLinks: socials,
       settings: s
         ? {

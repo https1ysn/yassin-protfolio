@@ -32,9 +32,10 @@ export const stats = [
 ];
 
 export const aboutParagraphs = [
-  "My story doesn't start in a bootcamp — it starts on the production line at Leoni Wiring Systems, one of the world's largest automotive suppliers. As a quality controller, my job was simple to describe and hard to do: nothing imperfect leaves the building. Every cable harness I signed off on ended up inside a real car. That kind of responsibility rewires how you work.",
-  "From quality control I moved into production data — at Siera, Ines Plastic Industry, and Neo Data Production — turning thousands of daily data points into clean records, Excel dashboards, and reports people could actually trust. Accuracy stopped being a skill and became a habit.",
-  "In parallel, I earned international diplomas in web development & programming and applied accounting, and I've been building ever since: semantic HTML, modern CSS, JavaScript, PHP & MySQL backends, and WordPress sites. I bring an industrial standard of rigor to every line of code — because I learned precision where it costs real money to get it wrong.",
+  "I'm Yassine — a junior web developer from Casablanca who came to code the unusual way: through factory floors, not bootcamps. At Leoni Wiring Systems, one of the world's largest automotive suppliers, I was the final quality gate — every cable harness I approved ended up inside a real car. You learn what \"attention to detail\" actually means when a missed defect has real consequences.",
+  "That mindset carried into production data at Siera, Ines Plastic Industry, and Neo Data Production, where I turned thousands of raw daily entries into clean records and Excel dashboards people could act on. Somewhere in those spreadsheets I discovered the thing I enjoy most: taking something messy and making it reliable.",
+  "That's why I build for the web. I earned international diplomas in web development & programming and applied accounting, then put them to work — this site is a full-stack project I built end to end: Next.js 15, TypeScript, Tailwind CSS, and a custom Supabase CMS with authentication, row-level security, and a complete admin dashboard. I care about the details most people skip: empty states, keyboard shortcuts, honest error messages.",
+  "What I'm working toward: becoming the frontend engineer teams trust with quality — someone who ships fast without shipping defects. Everything on this page is real, and the site itself is my proof of work.",
 ];
 
 export const strengths = [
@@ -56,17 +57,26 @@ export const strengths = [
   },
 ];
 
-export const experience = [
+export const experience: {
+  role: string;
+  company: string;
+  logo?: string;
+  period: string;
+  location: string;
+  summary: string;
+  bullets: string[];
+  tags: string[];
+}[] = [
   {
     role: "Data Entry Employee",
     company: "Neo Data Production",
     period: "Oct 2024 — Feb 2025",
     location: "Casablanca, Morocco",
-    summary: "High-volume digital data operations with strict deadlines.",
+    summary: "High-volume data operations where accuracy was the product being sold.",
     bullets: [
-      "Entered and updated data in internal systems with a near-zero error rate.",
-      "Managed digital files and maintained organized, searchable documentation.",
-      "Collaborated with the team to consistently hit data-processing deadlines.",
+      "Processed high volumes of records daily in internal systems while keeping the error rate near zero — accuracy was the deliverable, not a nice-to-have.",
+      "Restructured digital files into an organized, searchable documentation system the whole team relied on.",
+      "Hit every data-processing deadline as part of a coordinated team working against daily quotas.",
     ],
     tags: ["Data Entry", "Documentation", "Teamwork"],
   },
@@ -75,12 +85,12 @@ export const experience = [
     company: "Leoni Wiring Systems",
     period: "Dec 2023 — Oct 2024",
     location: "Casablanca, Morocco",
-    summary: "Final quality gate for automotive cable harnesses before shipment.",
+    summary: "The last set of eyes on automotive cable harnesses before they shipped to carmakers.",
     bullets: [
-      "Performed final quality control on cable harnesses before expedition.",
-      "Ran technical inspections to guarantee conformity with specifications.",
-      "Packed and labeled finished products for delivery.",
-      "Reported defects and worked with quality teams to resolve root causes.",
+      "Held final sign-off on product quality — nothing left the line without passing my inspection.",
+      "Ran technical conformity checks against specification, catching defects before they could reach automotive customers.",
+      "Documented and escalated defects clearly, then worked with quality teams to eliminate root causes — not just symptoms.",
+      "Kept shipments moving under production deadlines: inspected, packed, and labeled finished products for delivery.",
     ],
     tags: ["Quality Control", "Inspection", "Automotive"],
   },
@@ -89,11 +99,10 @@ export const experience = [
     company: "Ines Plastic Industry",
     period: "Casablanca, Morocco",
     location: "Industrial production",
-    summary: "Production data recording and validation in internal systems.",
+    summary: "Production data recording with verification built into every entry.",
     bullets: [
-      "Entered and recorded production data in internal systems.",
-      "Verified and validated entries to guarantee accuracy.",
-      "Archived and organized digital production files.",
+      "Recorded production data into internal systems and validated every entry before it entered reporting.",
+      "Built and maintained an organized digital archive of production records the team could actually find things in.",
     ],
     tags: ["Data Validation", "Archiving"],
   },
@@ -102,11 +111,10 @@ export const experience = [
     company: "Siera",
     period: "Casablanca, Morocco",
     location: "Production data",
-    summary: "Daily production reporting and Excel dashboarding.",
+    summary: "Turned raw daily production numbers into dashboards people could act on.",
     bullets: [
-      "Processed daily production data in Microsoft Excel.",
-      "Built and maintained dashboards and monitoring reports.",
-      "Checked data consistency and corrected detected anomalies.",
+      "Transformed daily production data into Excel dashboards and monitoring reports used for tracking output.",
+      "Caught and corrected data anomalies at entry time — before they could silently corrupt weekly summaries.",
     ],
     tags: ["Excel", "Dashboards", "Reporting"],
   },
@@ -166,24 +174,54 @@ export const languages = [
   { name: "English", level: "Independent user — B1", pct: 55 },
 ];
 
-export const projects = [
+export const projects: {
+  title: string;
+  category: string;
+  problem: string;
+  solution: string;
+  features: string[];
+  tech: string[];
+  linkLabel: string;
+  link: string;
+  featured?: boolean;
+  why?: string;
+  challenge?: string;
+  results?: string;
+  lessons?: string;
+}[] = [
   {
     title: "This Portfolio",
     category: "Web Development",
-    problem: "A CV alone can't show how someone works — recruiters need to feel the craft.",
+    featured: true,
+    problem:
+      "Junior developers all claim the same skills. A PDF can't demonstrate craft, and template portfolios prove nothing.",
+    why: "A CV says what I did — this site shows how I work. I wanted proof-of-work a recruiter could click through, and a real full-stack project to grow on.",
     solution:
-      "Designed and shipped this site with Next.js 15, TypeScript, Tailwind CSS and Framer Motion: smooth scrolling, magnetic buttons, a command palette, and a fully responsive dark interface.",
-    features: ["Custom cursor & animations", "Command palette (Ctrl+K)", "SEO & Open Graph ready"],
-    tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP"],
+      "Designed and built end to end: Next.js 15 App Router, TypeScript, Tailwind CSS 4, Framer Motion + GSAP — plus a custom Supabase CMS with authentication, row-level security, a media library, and a full admin dashboard.",
+    challenge:
+      "Making the site fully database-driven without ever risking a broken page. Solved with a content layer that falls back to built-in data on any failure — the public site works even with no database configured.",
+    results:
+      "Everything on this page is served live from the CMS. Compositor-only animations keep the site at ~230 kB first load with zero console errors.",
+    lessons:
+      "Server components change how you think about data flow — and security belongs in the database (row-level security), not just the UI.",
+    features: ["Custom Supabase CMS + admin dashboard", "Command palette (Ctrl+K)", "SEO, Open Graph & structured data"],
+    tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "Supabase", "Framer Motion", "GSAP"],
     linkLabel: "You're looking at it",
     link: "#home",
   },
   {
     title: "Production Data Dashboards",
     category: "Data & Reporting",
-    problem: "Factory teams at Siera needed daily visibility on production numbers scattered across raw entries.",
+    problem:
+      "Factory teams at Siera needed daily visibility on production numbers scattered across raw entries.",
+    why: "Real production work — supervisors needed decision-ready numbers, not spreadsheets full of raw entries.",
     solution:
-      "Built and maintained Excel dashboards and monitoring reports that turned daily production data into clear, decision-ready summaries — with consistency checks that caught anomalies before they spread.",
+      "Built and maintained Excel dashboards and monitoring reports that turned daily production data into clear, decision-ready summaries.",
+    challenge:
+      "Keeping the numbers trustworthy: daily entries arrived with inconsistencies that would silently corrupt weekly summaries. Solved by validating at entry time, not at review time.",
+    results:
+      "Reports that were actually used for daily tracking — with anomalies caught and corrected before they spread into reporting.",
+    lessons: "A report is only as good as the discipline behind its data. Validation belongs at the point of entry.",
     features: ["Daily production tracking", "Pivot-table reporting", "Anomaly detection & correction"],
     tech: ["Excel", "Pivot Tables", "Data Validation"],
     linkLabel: "Internal work — details on request",
@@ -193,8 +231,14 @@ export const projects = [
     title: "Accounting Workflow with SAGE",
     category: "Accounting & Data",
     problem: "Practical accounting demands clean books: entries, balances, and statements that reconcile.",
+    why: "Six months of intensive training — I wanted business literacy, not just code: understanding the numbers a company actually runs on.",
     solution:
-      "Through a 6-month intensive training, processed accounting entries in SAGE and Excel and produced simple balance sheets and income statements aligned with the Moroccan General Chart of Accounts.",
+      "Processed accounting entries in SAGE and Excel and produced balance sheets and income statements aligned with the Moroccan General Chart of Accounts.",
+    challenge:
+      "Reconciliation — making entries, balances, and statements agree under the Moroccan PCG. Small input errors compound fast; the fix was systematic double-checking at each stage.",
+    results: "Clean balance sheets and income statements that reconciled, produced in both SAGE and Excel.",
+    lessons:
+      "Accounting taught me the same lesson as quality control: rigor is a habit, and small errors compound quickly.",
     features: ["Journal entries in SAGE", "Balance sheets & income statements", "Moroccan PCG compliance"],
     tech: ["SAGE", "Excel", "Accounting"],
     linkLabel: "Certified training project",
@@ -218,6 +262,39 @@ export const services = [
   {
     title: "Accounting Support",
     text: "Entry processing in SAGE, simple balance sheets and income statements under the Moroccan PCG.",
+  },
+];
+
+export const certificates: { title: string; issuer: string; date: string; url: string }[] = [
+  {
+    title: "International Diploma — Web Development & Programming",
+    issuer: "Smart International Academy, London",
+    date: "",
+    url: "",
+  },
+  {
+    title: "International Diploma — Applied Accounting",
+    issuer: "Smart International Academy, London",
+    date: "",
+    url: "",
+  },
+  {
+    title: "Training Attestation — Web Development & Programming",
+    issuer: "Centre Atlantique de Formation",
+    date: "Dec 2024",
+    url: "",
+  },
+  {
+    title: "Training Attestation — Practical Accounting with SAGE",
+    issuer: "Centre Atlantique de Formation",
+    date: "Jul 2024",
+    url: "",
+  },
+  {
+    title: "Course Certificate — Front-End Development",
+    issuer: "Sololearn",
+    date: "Sep 2024",
+    url: "",
   },
 ];
 
@@ -254,6 +331,7 @@ export const navLinks = [
   { label: "About", href: "#about" },
   { label: "Experience", href: "#experience" },
   { label: "Skills", href: "#skills" },
+  { label: "Education", href: "#education" },
   { label: "Projects", href: "#projects" },
   { label: "Services", href: "#services" },
   { label: "Contact", href: "#contact" },

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import type { EntityConfig } from "@/lib/admin-config";
-import { saveSingleton } from "@/app/admin/actions";
+import { saveSingleton } from "@/app/(base)/admin/actions";
 import EntityForm, { emptyValues } from "./EntityForm";
 
 export default function SingletonEditor({

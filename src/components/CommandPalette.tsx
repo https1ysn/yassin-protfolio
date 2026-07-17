@@ -6,6 +6,7 @@ import {
   Briefcase,
   Download,
   FolderKanban,
+  GraduationCap,
   Home,
   Mail,
   MessageCircle,
@@ -15,6 +16,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { useContent } from "@/components/ContentContext";
+import { useT } from "@/components/I18nContext";
 
 type Action = {
   id: string;
@@ -28,6 +30,7 @@ type Props = { open: boolean; setOpen: (v: boolean) => void };
 
 export default function CommandPalette({ open, setOpen }: Props) {
   const { profile } = useContent();
+  const t = useT();
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -39,17 +42,18 @@ export default function CommandPalette({ open, setOpen }: Props) {
 
   const actions = useMemo<Action[]>(
     () => [
-      { id: "home", label: "Go to Home", hint: "Section", icon: <Home size={16} />, run: () => goTo("#home") },
-      { id: "about", label: "Go to About", hint: "Section", icon: <User size={16} />, run: () => goTo("#about") },
-      { id: "experience", label: "Go to Experience", hint: "Section", icon: <Briefcase size={16} />, run: () => goTo("#experience") },
-      { id: "skills", label: "Go to Skills", hint: "Section", icon: <Sparkles size={16} />, run: () => goTo("#skills") },
-      { id: "projects", label: "Go to Projects", hint: "Section", icon: <FolderKanban size={16} />, run: () => goTo("#projects") },
-      { id: "services", label: "Go to Services", hint: "Section", icon: <Wrench size={16} />, run: () => goTo("#services") },
-      { id: "contact", label: "Go to Contact", hint: "Section", icon: <Mail size={16} />, run: () => goTo("#contact") },
+      { id: "home", label: t("palette.goHome"), hint: t("palette.section"), icon: <Home size={16} />, run: () => goTo("#home") },
+      { id: "about", label: t("palette.goAbout"), hint: t("palette.section"), icon: <User size={16} />, run: () => goTo("#about") },
+      { id: "education", label: t("palette.goEducation"), hint: t("palette.section"), icon: <GraduationCap size={16} />, run: () => goTo("#education") },
+      { id: "experience", label: t("palette.goExperience"), hint: t("palette.section"), icon: <Briefcase size={16} />, run: () => goTo("#experience") },
+      { id: "skills", label: t("palette.goSkills"), hint: t("palette.section"), icon: <Sparkles size={16} />, run: () => goTo("#skills") },
+      { id: "projects", label: t("palette.goProjects"), hint: t("palette.section"), icon: <FolderKanban size={16} />, run: () => goTo("#projects") },
+      { id: "services", label: t("palette.goServices"), hint: t("palette.section"), icon: <Wrench size={16} />, run: () => goTo("#services") },
+      { id: "contact", label: t("palette.goContact"), hint: t("palette.section"), icon: <Mail size={16} />, run: () => goTo("#contact") },
       {
         id: "cv",
-        label: "Download CV",
-        hint: "PDF",
+        label: t("palette.downloadCV"),
+        hint: t("palette.pdf"),
         icon: <Download size={16} />,
         run: () => {
           setOpen(false);
@@ -58,7 +62,7 @@ export default function CommandPalette({ open, setOpen }: Props) {
       },
       {
         id: "email",
-        label: "Send an email",
+        label: t("palette.sendEmail"),
         hint: profile.email,
         icon: <Mail size={16} />,
         run: () => {
@@ -68,7 +72,7 @@ export default function CommandPalette({ open, setOpen }: Props) {
       },
       {
         id: "whatsapp",
-        label: "Chat on WhatsApp",
+        label: t("palette.chatWhatsApp"),
         hint: profile.displayPhone,
         icon: <MessageCircle size={16} />,
         run: () => {
@@ -78,7 +82,7 @@ export default function CommandPalette({ open, setOpen }: Props) {
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [profile]
+    [profile, t]
   );
 
   const filtered = useMemo(
@@ -149,7 +153,7 @@ export default function CommandPalette({ open, setOpen }: Props) {
                   setIndex(0);
                 }}
                 onKeyDown={onInputKey}
-                placeholder="Type a command or search…"
+                placeholder={t("palette.placeholder")}
                 className="w-full bg-transparent text-sm text-white outline-none placeholder:text-muted"
                 aria-label="Search commands"
               />
@@ -157,7 +161,7 @@ export default function CommandPalette({ open, setOpen }: Props) {
             </div>
             <ul className="max-h-72 overflow-y-auto p-2">
               {filtered.length === 0 && (
-                <li className="px-4 py-8 text-center text-sm text-muted">No results found.</li>
+                <li className="px-4 py-8 text-center text-sm text-muted">{t("palette.noResults")}</li>
               )}
               {filtered.map((action, i) => (
                 <li key={action.id}>
@@ -177,7 +181,7 @@ export default function CommandPalette({ open, setOpen }: Props) {
               ))}
             </ul>
             <div className="border-t border-white/10 px-4 py-2.5 text-[11px] text-muted/70">
-              Navigate with ↑ ↓ · Select with ↵
+              {t("palette.hint")}
             </div>
           </motion.div>
         </motion.div>

@@ -2,6 +2,7 @@
 
 import { Globe, KeyboardMusic, LineChart, Calculator, ArrowRight } from "lucide-react";
 import { useContent } from "@/components/ContentContext";
+import { useT } from "@/components/I18nContext";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import TiltCard from "@/components/ui/TiltCard";
@@ -15,14 +16,16 @@ const icons = [
 
 export default function Services() {
   const { services, profile } = useContent();
+  const t = useT();
+  if (services.length === 0) return null;
   return (
     <section id="services" className="relative py-28 md:py-36">
       <div className="shell">
         <SectionHeading
-          eyebrow="Services"
-          title="What I can"
-          accent="do for you."
-          description="Available for freelance projects and junior positions — remote or in Casablanca."
+          eyebrow={t("services.eyebrow")}
+          title={t("services.title")}
+          accent={t("services.accent")}
+          description={t("services.description")}
         />
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -38,8 +41,11 @@ export default function Services() {
                   href={`mailto:${profile.email}?subject=${encodeURIComponent(`Inquiry: ${s.title}`)}`}
                   className="link-underline mt-6 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-white/60 transition-colors group-hover:text-white"
                 >
-                  Get a quote
-                  <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  {t("services.getQuote")}
+                  <ArrowRight
+                    size={14}
+                    className="transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                  />
                 </a>
               </TiltCard>
             </Reveal>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useT } from "@/components/I18nContext";
 
 const KONAMI = [
   "ArrowUp",
@@ -18,6 +19,7 @@ const KONAMI = [
 
 /** Konami code (↑↑↓↓←→←→BA) triggers 10 seconds of party mode. */
 export default function EasterEgg() {
+  const t = useT();
   const [party, setParty] = useState(false);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function EasterEgg() {
           exit={{ opacity: 0, y: 30 }}
           className="glass fixed bottom-6 left-1/2 z-[97] -translate-x-1/2 rounded-full px-6 py-3 text-sm font-semibold"
         >
-          🎉 You found the secret! Precision <span className="gradient-text">and</span> fun.
+          🎉 {t("easterEgg")}
         </motion.div>
       )}
     </AnimatePresence>

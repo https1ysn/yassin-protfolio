@@ -2,6 +2,8 @@
 
 import { CheckCircle2, MapPin, GraduationCap, Languages } from "lucide-react";
 import { useContent } from "@/components/ContentContext";
+import { useT } from "@/components/I18nContext";
+import MarqueeShowcase from "@/components/MarqueeShowcase";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import Counter from "@/components/ui/Counter";
@@ -9,6 +11,7 @@ import TiltCard from "@/components/ui/TiltCard";
 
 export default function About() {
   const { aboutParagraphs, profile, stats, strengths, education } = useContent();
+  const t = useT();
   return (
     <section id="about" className="relative py-28 md:py-36">
       <div className="shell">
@@ -28,11 +31,7 @@ export default function About() {
           ))}
         </div>
 
-        <SectionHeading
-          eyebrow="About Me"
-          title="Precision learned in factories,"
-          accent="applied to code."
-        />
+        <SectionHeading eyebrow={t("about.eyebrow")} title={t("about.title")} accent={t("about.accent")} />
 
         <div className="grid gap-14 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="space-y-6">
@@ -47,10 +46,10 @@ export default function About() {
                 <MapPin size={15} className="text-cyan-accent" /> {profile.location}
               </span>
               <span className="inline-flex items-center gap-2">
-                <Languages size={15} className="text-violet-accent" /> Arabic · French · English
+                <Languages size={15} className="text-violet-accent" /> {t("about.languagesLine")}
               </span>
               <span className="inline-flex items-center gap-2">
-                <GraduationCap size={15} className="text-indigo-accent" /> {education.length} diplomas & certificates
+                <GraduationCap size={15} className="text-indigo-accent" /> {education.length} {t("about.diplomas")}
               </span>
             </Reveal>
           </div>
@@ -71,19 +70,16 @@ export default function About() {
           </div>
         </div>
 
-        {/* education strip */}
+        {/* career highlights marquee — the whole profile at a glance */}
         <Reveal className="mt-24" delay={0.1}>
-          <div className="card-surface marquee-mask overflow-hidden rounded-2xl py-5">
-            <div className="animate-marquee flex w-max items-center gap-12 px-6">
-              {[...education, ...education].map((e, i) => (
-                <span key={i} className="flex items-center gap-3 whitespace-nowrap text-sm text-muted">
-                  <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-indigo-accent to-cyan-accent" />
-                  <strong className="font-medium text-white/85">{e.title}</strong>
-                  <span className="text-muted/70">· {e.org}</span>
-                </span>
-              ))}
-            </div>
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-muted">
+              <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-indigo-accent to-cyan-accent shadow-[0_0_12px_rgba(124,58,237,0.9)]" />
+              {t("about.highlights")}
+            </span>
+            <span className="text-xs text-muted/80">{t("about.hoverToPause")}</span>
           </div>
+          <MarqueeShowcase />
         </Reveal>
       </div>
     </section>

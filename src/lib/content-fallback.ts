@@ -10,6 +10,7 @@ import {
   projects as fallbackProjects,
   services as fallbackServices,
   education as fallbackEducation,
+  certificates as fallbackCertificates,
 } from "@/lib/data";
 
 export type SocialLink = { platform: string; label: string; url: string };
@@ -51,6 +52,7 @@ export type SiteContent = {
   projects: typeof fallbackProjects;
   services: typeof fallbackServices;
   education: typeof fallbackEducation;
+  certificates: typeof fallbackCertificates;
   socialLinks: SocialLink[];
   settings: SiteSettings;
 };
@@ -99,6 +101,7 @@ export const fallbackContent: SiteContent = {
   projects: fallbackProjects,
   services: fallbackServices,
   education: fallbackEducation,
+  certificates: fallbackCertificates,
   socialLinks: [],
   settings: defaultSettings,
 };

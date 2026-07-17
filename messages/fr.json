@@ -1,0 +1,138 @@
+{
+  "meta": {
+    "description": "Développeur web junior et spécialiste des données à Casablanca, Maroc. HTML, CSS, JavaScript, PHP, MySQL, WordPress, tableaux de bord Excel et contrôle qualité de niveau industriel."
+  },
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "experience": "Expérience",
+    "skills": "Compétences",
+    "education": "Formation",
+    "projects": "Projets",
+    "services": "Services",
+    "contact": "Contact",
+    "hireMe": "Me recruter",
+    "openPalette": "Ouvrir la palette de commandes",
+    "toggleMenu": "Ouvrir le menu de navigation",
+    "changeLanguage": "Changer de langue"
+  },
+  "hero": {
+    "downloadCV": "Télécharger le CV",
+    "hireMe": "Me recruter",
+    "viewProjects": "Voir les projets",
+    "basedIn": "Basé à",
+    "currently": "Actuellement",
+    "yearsExperience": "ans d'expérience",
+    "certifications": "certifications",
+    "scrollToAbout": "Aller à la section À propos"
+  },
+  "about": {
+    "eyebrow": "À propos",
+    "title": "La précision apprise en usine,",
+    "accent": "appliquée au code.",
+    "highlights": "Points forts du parcours",
+    "hoverToPause": "survolez pour mettre en pause",
+    "diplomas": "diplômes & certificats",
+    "languagesLine": "Arabe · Français · Anglais"
+  },
+  "experience": {
+    "eyebrow": "Expérience",
+    "title": "Un parcours fondé sur",
+    "accent": "la fiabilité.",
+    "description": "Quatre postes entre le contrôle qualité automobile et les données de production — chacun a renforcé la même promesse : ce que je livre est juste, à l'heure et documenté."
+  },
+  "education": {
+    "eyebrow": "Formation",
+    "title": "Des diplômes qui",
+    "accent": "soutiennent le savoir-faire.",
+    "description": "Diplômes internationaux, formations pratiques et certificats — la base formelle derrière l'expérience de terrain.",
+    "certificates": "Certificats",
+    "verify": "Vérifier le certificat",
+    "onRequest": "Document original disponible sur demande"
+  },
+  "skills": {
+    "eyebrow": "Compétences",
+    "title": "Un socle bâti sur",
+    "accent": "les fondamentaux.",
+    "description": "Des niveaux honnêtes, sans exagération — des bases solides en développement web et en données, et je progresse chaque semaine.",
+    "softSkills": "Savoir-être",
+    "languages": "Langues"
+  },
+  "projects": {
+    "eyebrow": "Projets",
+    "title": "Du travail réel,",
+    "accent": "présenté honnêtement.",
+    "description": "Une sélection issue de mes postes et de mes formations — présentée en études de cas : le problème, ce que j'ai construit, et ce que ça apporte.",
+    "caseStudy": "Étude de cas",
+    "why": "Pourquoi ce projet",
+    "challenge": "Plus grand défi",
+    "results": "Résultats",
+    "lessons": "Leçons retenues",
+    "featured": "À la une"
+  },
+  "services": {
+    "eyebrow": "Services",
+    "title": "Ce que je peux",
+    "accent": "faire pour vous.",
+    "description": "Disponible pour des missions freelance et des postes juniors — à distance ou à Casablanca.",
+    "getQuote": "Demander un devis"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Construisons quelque chose",
+    "accent": "ensemble.",
+    "description": "Un poste, un projet ou une simple question ? L'email est le moyen le plus rapide de me joindre — je réponds sous 24 heures.",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "phone": "Téléphone",
+    "location": "Localisation",
+    "visitProfile": "Voir le profil",
+    "fastest": "Réponse la plus rapide",
+    "yourName": "Votre nom",
+    "yourEmail": "Votre email",
+    "message": "Message",
+    "namePlaceholder": "Jeanne Dupont",
+    "emailPlaceholder": "jeanne@entreprise.com",
+    "messagePlaceholder": "Parlez-moi de votre projet…",
+    "send": "Envoyer le message",
+    "formNote": "Ouvre votre application email avec le message prêt à envoyer — aucune donnée n'est stockée.",
+    "mailSubject": "Contact portfolio de {name}"
+  },
+  "footer": {
+    "line": "© {year} · Conçu et développé avec Next.js à {location}",
+    "backToTop": "Retour en haut"
+  },
+  "palette": {
+    "placeholder": "Tapez une commande ou recherchez…",
+    "noResults": "Aucun résultat.",
+    "hint": "Naviguez avec ↑ ↓ · Validez avec ↵",
+    "goHome": "Aller à l'accueil",
+    "goAbout": "Aller à À propos",
+    "goEducation": "Aller à Formation & Certificats",
+    "goExperience": "Aller à Expérience",
+    "goSkills": "Aller à Compétences",
+    "goProjects": "Aller aux Projets",
+    "goServices": "Aller aux Services",
+    "goContact": "Aller au Contact",
+    "downloadCV": "Télécharger le CV",
+    "sendEmail": "Envoyer un email",
+    "chatWhatsApp": "Discuter sur WhatsApp",
+    "section": "Section",
+    "pdf": "PDF"
+  },
+  "marquee": {
+    "education": "Formation",
+    "certificate": "Certificat",
+    "language": "Langue",
+    "experience": "Expérience",
+    "project": "Projet",
+    "strength": "Atout",
+    "service": "Service"
+  },
+  "easterEgg": "Vous avez trouvé le secret ! La précision et le fun.",
+  "langSelect": {
+    "welcome": "Welcome · Bienvenue · مرحباً",
+    "title": "Choisissez votre langue",
+    "subtitle": "Vous pourrez la changer à tout moment depuis le menu."
+  }
+}

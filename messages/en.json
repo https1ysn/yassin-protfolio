@@ -1,0 +1,138 @@
+{
+  "meta": {
+    "description": "Junior web developer and data specialist in Casablanca, Morocco. HTML, CSS, JavaScript, PHP, MySQL, WordPress, Excel dashboards, and industrial-grade quality control."
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "experience": "Experience",
+    "skills": "Skills",
+    "education": "Education",
+    "projects": "Projects",
+    "services": "Services",
+    "contact": "Contact",
+    "hireMe": "Hire Me",
+    "openPalette": "Open command palette",
+    "toggleMenu": "Toggle navigation menu",
+    "changeLanguage": "Change language"
+  },
+  "hero": {
+    "downloadCV": "Download CV",
+    "hireMe": "Hire Me",
+    "viewProjects": "View Projects",
+    "basedIn": "Based in",
+    "currently": "Currently",
+    "yearsExperience": "years experience",
+    "certifications": "certifications",
+    "scrollToAbout": "Scroll to about section"
+  },
+  "about": {
+    "eyebrow": "About Me",
+    "title": "Precision learned in factories,",
+    "accent": "applied to code.",
+    "highlights": "Career Highlights",
+    "hoverToPause": "hover to pause",
+    "diplomas": "diplomas & certificates",
+    "languagesLine": "Arabic · French · English"
+  },
+  "experience": {
+    "eyebrow": "Experience",
+    "title": "A track record of",
+    "accent": "reliability.",
+    "description": "Four roles across automotive quality control and production data — each one sharpened the same core promise: what I deliver is correct, on time, and documented."
+  },
+  "education": {
+    "eyebrow": "Education",
+    "title": "Credentials that",
+    "accent": "back the craft.",
+    "description": "International diplomas, hands-on training, and certificates — the formal foundation under the practical experience.",
+    "certificates": "Certificates",
+    "verify": "Verify credential",
+    "onRequest": "Original document available on request"
+  },
+  "skills": {
+    "eyebrow": "Skills",
+    "title": "A stack built on",
+    "accent": "fundamentals.",
+    "description": "Honest levels, no inflation — strong foundations in web development and data work, and I level up every single week.",
+    "softSkills": "Soft Skills",
+    "languages": "Languages"
+  },
+  "projects": {
+    "eyebrow": "Projects",
+    "title": "Real work,",
+    "accent": "honestly presented.",
+    "description": "Selected work from my professional roles and training — presented as case studies: the problem, what I built, and what it delivers.",
+    "caseStudy": "Case study",
+    "why": "Why it was built",
+    "challenge": "Biggest challenge",
+    "results": "Results",
+    "lessons": "Lessons learned",
+    "featured": "Featured"
+  },
+  "services": {
+    "eyebrow": "Services",
+    "title": "What I can",
+    "accent": "do for you.",
+    "description": "Available for freelance projects and junior positions — remote or in Casablanca.",
+    "getQuote": "Get a quote"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Let's build something",
+    "accent": "together.",
+    "description": "Have a role, a project, or just a question? Email is the fastest way to reach me — I reply within 24 hours.",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "phone": "Phone",
+    "location": "Location",
+    "visitProfile": "Visit profile",
+    "fastest": "Fastest response",
+    "yourName": "Your name",
+    "yourEmail": "Your email",
+    "message": "Message",
+    "namePlaceholder": "Jane Doe",
+    "emailPlaceholder": "jane@company.com",
+    "messagePlaceholder": "Tell me about your project…",
+    "send": "Send Message",
+    "formNote": "Opens your email app with the message ready to send — no data is stored.",
+    "mailSubject": "Portfolio contact from {name}"
+  },
+  "footer": {
+    "line": "© {year} · Designed & built with Next.js in {location}",
+    "backToTop": "Back to top"
+  },
+  "palette": {
+    "placeholder": "Type a command or search…",
+    "noResults": "No results found.",
+    "hint": "Navigate with ↑ ↓ · Select with ↵",
+    "goHome": "Go to Home",
+    "goAbout": "Go to About",
+    "goEducation": "Go to Education & Certifications",
+    "goExperience": "Go to Experience",
+    "goSkills": "Go to Skills",
+    "goProjects": "Go to Projects",
+    "goServices": "Go to Services",
+    "goContact": "Go to Contact",
+    "downloadCV": "Download CV",
+    "sendEmail": "Send an email",
+    "chatWhatsApp": "Chat on WhatsApp",
+    "section": "Section",
+    "pdf": "PDF"
+  },
+  "marquee": {
+    "education": "Education",
+    "certificate": "Certificate",
+    "language": "Language",
+    "experience": "Experience",
+    "project": "Project",
+    "strength": "Strength",
+    "service": "Service"
+  },
+  "easterEgg": "You found the secret! Precision and fun.",
+  "langSelect": {
+    "welcome": "Welcome · Bienvenue · مرحباً",
+    "title": "Choose your language",
+    "subtitle": "You can change it anytime from the menu."
+  }
+}

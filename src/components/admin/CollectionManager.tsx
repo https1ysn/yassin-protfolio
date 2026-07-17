@@ -8,7 +8,7 @@ import {
   Search, Square, Trash2, X,
 } from "lucide-react";
 import type { EntityConfig } from "@/lib/admin-config";
-import { deleteRows, duplicateRow, reorderRows, restoreRows, saveRow, setRowFlags } from "@/app/admin/actions";
+import { deleteRows, duplicateRow, reorderRows, restoreRows, saveRow, setRowFlags } from "@/app/(base)/admin/actions";
 import EntityForm, { emptyValues } from "./EntityForm";
 import ConfirmDialog from "./ConfirmDialog";
 import GalleryEditor from "./GalleryEditor";

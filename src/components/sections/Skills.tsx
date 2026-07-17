@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Code2, Database, BarChart3, Palette, Globe2, HeartHandshake } from "lucide-react";
 import { useContent } from "@/components/ContentContext";
+import { useT } from "@/components/I18nContext";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 
@@ -15,7 +16,7 @@ const groupIcons = [
 
 function Bar({ level, delay }: { level: number; delay: number }) {
   return (
-    <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.07] shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">
+    <div className="skill-track h-1.5 overflow-hidden rounded-full bg-white/[0.07] shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">
       <motion.div
         className="relative h-full rounded-full bg-gradient-to-r from-indigo-accent via-violet-accent to-cyan-accent"
         initial={{ width: 0 }}
@@ -35,33 +36,39 @@ function Bar({ level, delay }: { level: number; delay: number }) {
 
 export default function Skills() {
   const { languages, skillGroups, softSkills } = useContent();
+  const t = useT();
+  const hasSkills = skillGroups.some((g) => g.skills.length > 0);
+  if (!hasSkills && softSkills.length === 0 && languages.length === 0) return null;
   return (
     <section id="skills" className="relative py-28 md:py-36">
       <div className="bg-grid absolute inset-0 rotate-180" aria-hidden="true" />
       <div className="shell relative">
         <SectionHeading
-          eyebrow="Skills"
-          title="A stack built on"
-          accent="fundamentals."
-          description="Honest levels, no inflation — strong foundations in web development and data work, and I level up every single week."
+          eyebrow={t("skills.eyebrow")}
+          title={t("skills.title")}
+          accent={t("skills.accent")}
+          description={t("skills.description")}
         />
 
         <div className="grid gap-5 md:grid-cols-2">
-          {skillGroups.map((group, gi) => (
+          {skillGroups.filter((g) => g.skills.length > 0).map((group, gi) => (
             <Reveal key={group.title} delay={gi * 0.08}>
               <div className="card-surface card-hover h-full rounded-2xl p-6 md:p-8">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-accent/20 to-cyan-accent/20 text-cyan-accent">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-accent/20 to-cyan-accent/20 text-cyan-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
                     {groupIcons[gi]}
                   </span>
-                  <h3 className="font-display text-lg font-semibold">{group.title}</h3>
+                  <h3 className="font-display text-lg font-semibold tracking-tight">{group.title}</h3>
+                  <span className="ml-auto rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-semibold tabular-nums text-muted">
+                    {group.skills.length}
+                  </span>
                 </div>
                 <div className="mt-6 space-y-5">
                   {group.skills.map((skill, si) => (
-                    <div key={skill.name}>
+                    <div key={skill.name} className="skill-row">
                       <div className="mb-2 flex items-center justify-between text-sm">
-                        <span className="text-white/85">{skill.name}</span>
-                        <span className="text-xs text-muted">{skill.level}%</span>
+                        <span className="skill-name text-white/85">{skill.name}</span>
+                        <span className="skill-pct text-xs tabular-nums text-muted">{skill.level}%</span>
                       </div>
                       <Bar level={skill.level} delay={0.15 + si * 0.07} />
                     </div>
@@ -79,7 +86,7 @@ export default function Skills() {
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-accent/20 to-cyan-accent/20 text-violet-300">
                   <HeartHandshake size={18} />
                 </span>
-                <h3 className="font-display text-lg font-semibold">Soft Skills</h3>
+                <h3 className="font-display text-lg font-semibold">{t("skills.softSkills")}</h3>
               </div>
               <div className="mt-6 flex flex-wrap gap-2.5">
                 {softSkills.map((s, i) => (
@@ -104,14 +111,14 @@ export default function Skills() {
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-accent/20 to-cyan-accent/20 text-cyan-accent">
                   <Globe2 size={18} />
                 </span>
-                <h3 className="font-display text-lg font-semibold">Languages</h3>
+                <h3 className="font-display text-lg font-semibold">{t("skills.languages")}</h3>
               </div>
               <div className="mt-6 space-y-5">
                 {languages.map((lang, i) => (
-                  <div key={lang.name}>
+                  <div key={lang.name} className="skill-row">
                     <div className="mb-2 flex items-center justify-between text-sm">
-                      <span className="text-white/85">{lang.name}</span>
-                      <span className="text-xs text-muted">{lang.level}</span>
+                      <span className="skill-name text-white/85">{lang.name}</span>
+                      <span className="skill-pct text-xs text-muted">{lang.level}</span>
                     </div>
                     <Bar level={lang.pct} delay={0.15 + i * 0.1} />
                   </div>

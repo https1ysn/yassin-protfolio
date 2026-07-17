@@ -5,9 +5,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Command, Menu, X } from "lucide-react";
 import { navLinks } from "@/lib/data";
 import { useContent } from "@/components/ContentContext";
+import { useT } from "@/components/I18nContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Navbar({ onOpenPalette }: { onOpenPalette: () => void }) {
   const { profile } = useContent();
+  const t = useT();
   const [active, setActive] = useState("#home");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -72,31 +75,32 @@ export default function Navbar({ onOpenPalette }: { onOpenPalette: () => void })
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
-                <span className="relative">{link.label}</span>
+                <span className="relative">{t(`nav.${link.href.slice(1)}`)}</span>
               </a>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <button
             type="button"
             onClick={onOpenPalette}
             className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-muted transition-colors hover:border-white/25 hover:text-white md:flex"
-            aria-label="Open command palette"
+            aria-label={t("nav.openPalette")}
           >
             <Command size={13} />
             <span>Ctrl K</span>
           </button>
           <a href="#contact" className="btn-primary hidden rounded-full px-4 py-2 text-sm font-semibold text-white sm:block">
-            Hire Me
+            {t("nav.hireMe")}
           </a>
           <button
             type="button"
             className="icon-chip h-9 w-9 rounded-full text-white lg:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            aria-label="Toggle navigation menu"
+            aria-label={t("nav.toggleMenu")}
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -121,7 +125,7 @@ export default function Navbar({ onOpenPalette }: { onOpenPalette: () => void })
                     active === link.href ? "bg-white/[0.07] text-white" : "text-muted"
                   }`}
                 >
-                  {link.label}
+                  {t(`nav.${link.href.slice(1)}`)}
                 </a>
               </li>
             ))}

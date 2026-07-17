@@ -3,9 +3,11 @@
 import { ArrowUp } from "lucide-react";
 import { navLinks } from "@/lib/data";
 import { useContent } from "@/components/ContentContext";
+import { useT } from "@/components/I18nContext";
 
 export default function Footer() {
   const { profile } = useContent();
+  const t = useT();
   return (
     <footer className="border-t border-white/[0.06] py-12">
       <div className="shell flex flex-col items-center gap-8 md:flex-row md:justify-between">
@@ -16,7 +18,7 @@ export default function Footer() {
           <div>
             <p className="text-sm font-semibold">{profile.name}</p>
             <p className="text-xs text-muted">
-              © {new Date().getFullYear()} · Designed & built with Next.js in {profile.location}
+              {t("footer.line", { year: new Date().getFullYear(), location: profile.location })}
             </p>
           </div>
         </div>
@@ -26,7 +28,7 @@ export default function Footer() {
             {navLinks.map((l) => (
               <li key={l.href}>
                 <a href={l.href} className="link-underline text-xs text-muted transition-colors hover:text-white">
-                  {l.label}
+                  {t(`nav.${l.href.slice(1)}`)}
                 </a>
               </li>
             ))}
@@ -36,7 +38,7 @@ export default function Footer() {
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Back to top"
+          aria-label={t("footer.backToTop")}
           className="icon-chip group h-10 w-10 rounded-full"
         >
           <ArrowUp size={16} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
