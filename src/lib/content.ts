@@ -8,6 +8,7 @@ import {
   type SocialLink,
 } from "@/lib/content-fallback";
 import { isSupabaseConfigured, supabaseServer } from "@/lib/supabase/server";
+import type { Locale } from "@/lib/i18n";
 
 export type { SiteContent, SeoData, SocialLink };
 export { fallbackContent, defaultSettings, defaultSeo };
@@ -17,11 +18,32 @@ const rows = (r: { data: any }) => (r.data ?? []) as any[];
 const one = (r: { data: any }) => r.data as any | null;
 
 /**
- * Loads all public content from Supabase, mapped to the exact shapes the
- * components render. Any failure (no env vars, empty DB, network) falls
- * back to the built-in content so the site never breaks.
+ * Centralized localized-field resolver.
+ * Chain: requested locale variant (`field_fr` / `field_ar`) → English/original column.
+ * Empty translations always fall back, so partially translated content never breaks.
  */
-export async function getSiteContent(): Promise<SiteContent> {
+const loc = (row: any, field: string, locale: Locale): string => {
+  if (locale !== "en") {
+    const v = row?.[`${field}_${locale}`];
+    if (typeof v === "string" && v.trim() !== "") return v;
+  }
+  return row?.[field] ?? "";
+};
+
+const locArr = <T,>(row: any, field: string, locale: Locale): T[] => {
+  if (locale !== "en") {
+    const v = row?.[`${field}_${locale}`];
+    if (Array.isArray(v) && v.length > 0) return v as T[];
+  }
+  return (row?.[field] as T[]) ?? [];
+};
+
+/**
+ * Loads all public content from Supabase in the requested locale, mapped to
+ * the exact shapes the components render. Any failure (no env vars, empty DB,
+ * network) falls back to the built-in content so the site never breaks.
+ */
+export async function getSiteContent(locale: Locale = "en"): Promise<SiteContent> {
   if (!isSupabaseConfigured()) return fallbackContent;
 
   try {
@@ -69,8 +91,8 @@ export async function getSiteContent(): Promise<SiteContent> {
       profile: {
         name: p.name,
         initials: p.initials,
-        role: p.role,
-        typingRoles: (p.typing_roles as string[]) ?? [],
+        role: loc(p, "role", locale),
+        typingRoles: locArr<string>(p, "typing_roles", locale),
         location: p.location,
         email: contact?.email ?? fp.email,
         phone: contact?.phone ?? fp.phone,
@@ -80,55 +102,69 @@ export async function getSiteContent(): Promise<SiteContent> {
         github: byPlatform("github"),
         photo: p.photo_url,
         cvFile: p.cv_url,
-        tagline: p.tagline,
-        availability: p.availability,
+        tagline: loc(p, "tagline", locale),
+        availability: loc(p, "availability", locale),
       },
-      stats: (hero?.stats as SiteContent["stats"]) ?? fallbackContent.stats,
-      aboutParagraphs: (about?.paragraphs as string[]) ?? fallbackContent.aboutParagraphs,
-      strengths: (about?.strengths as SiteContent["strengths"]) ?? fallbackContent.strengths,
+      stats: hero ? locArr(hero, "stats", locale) as SiteContent["stats"] : fallbackContent.stats,
+      aboutParagraphs: about ? locArr<string>(about, "paragraphs", locale) : fallbackContent.aboutParagraphs,
+      strengths: about
+        ? (locArr(about, "strengths", locale) as SiteContent["strengths"])
+        : fallbackContent.strengths,
       experience: rows(xpQ)
         .filter((e) => e.archived !== true)
         .map((e) => ({
-          role: e.role,
+          role: loc(e, "role", locale),
           company: e.company,
           logo: e.logo_url ?? "",
           period: e.period,
           location: e.location,
-          summary: e.summary,
-          bullets: (e.bullets as string[]) ?? [],
+          summary: loc(e, "summary", locale),
+          bullets: locArr<string>(e, "bullets", locale),
           tags: (e.tags as string[]) ?? [],
         })),
       skillGroups: rows(catQ).map((c) => ({
-        title: c.title,
+        title: loc(c, "title", locale),
         skills: skillsByCat
           .filter((sk) => sk.category_id === c.id)
           .map((sk) => ({ name: sk.name, level: sk.level })),
       })),
-      softSkills: rows(softQ).map((x) => x.name),
-      languages: rows(langQ).map((l) => ({ name: l.name, level: l.level_label, pct: l.percent })),
+      softSkills: rows(softQ).map((x) => loc(x, "name", locale)),
+      languages: rows(langQ).map((l) => ({
+        name: loc(l, "name", locale),
+        level: loc(l, "level_label", locale),
+        pct: l.percent,
+      })),
       projects: rows(projQ)
         .filter((pr) => pr.archived !== true)
         .map((pr) => ({
-        title: pr.title,
-        category: pr.category,
-        problem: pr.problem,
-        solution: pr.solution,
-        features: (pr.features as string[]) ?? [],
+        title: loc(pr, "title", locale),
+        category: loc(pr, "category", locale),
+        problem: loc(pr, "problem", locale),
+        solution: loc(pr, "solution", locale),
+        features: locArr<string>(pr, "features", locale),
         tech: (pr.technologies as string[]) ?? [],
         linkLabel:
-          pr.link_label || (pr.live_url ? "View live" : pr.github_url ? "View code" : "Details on request"),
+          loc(pr, "link_label", locale) ||
+          (pr.live_url ? "View live" : pr.github_url ? "View code" : "Details on request"),
         link: pr.live_url || pr.github_url || "",
         featured: pr.featured === true,
-        why: pr.long_description ?? "",
-        challenge: pr.challenge ?? "",
-        results: pr.results ?? "",
-        lessons: pr.lessons ?? "",
+        why: loc(pr, "long_description", locale),
+        challenge: loc(pr, "challenge", locale),
+        results: loc(pr, "results", locale),
+        lessons: loc(pr, "lessons", locale),
       })),
-      services: rows(svcQ).map((sv) => ({ title: sv.title, text: sv.description })),
-      education: rows(eduQ).map((ed) => ({ title: ed.title, org: ed.organization, meta: ed.meta })),
+      services: rows(svcQ).map((sv) => ({
+        title: loc(sv, "title", locale),
+        text: loc(sv, "description", locale),
+      })),
+      education: rows(eduQ).map((ed) => ({
+        title: loc(ed, "title", locale),
+        org: ed.organization,
+        meta: loc(ed, "meta", locale),
+      })),
       certificates: rows(certQ).map((c) => ({
-        title: c.title,
-        issuer: c.issuer,
+        title: loc(c, "title", locale),
+        issuer: loc(c, "issuer", locale),
         date: c.date_label ?? "",
         url: c.url ?? "",
       })),

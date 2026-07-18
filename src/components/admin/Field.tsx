@@ -49,8 +49,20 @@ function UploadButton({ onDone, accept }: { onDone: (url: string) => void; accep
   );
 }
 
-/** Renders one admin form field from its config definition. */
-export default function Field({ field }: { field: FieldDef }) {
+/** Renders one admin form field from its config definition.
+ *  With `suffix`, binds the localized variant column (e.g. title_fr). */
+export default function Field({
+  field: baseField,
+  suffix,
+  rtl,
+}: {
+  field: FieldDef;
+  suffix?: string;
+  rtl?: boolean;
+}) {
+  // shadow the field so every existing `field.name` reference targets the variant
+  const field = suffix ? { ...baseField, name: `${baseField.name}_${suffix}` } : baseField;
+  const dir = rtl ? ("rtl" as const) : undefined;
   const { register, control, formState } = useFormContext();
   const error = formState.errors[field.name]?.message as string | undefined;
 
@@ -66,7 +78,7 @@ export default function Field({ field }: { field: FieldDef }) {
   switch (field.type) {
     case "textarea":
       return wrap(
-        <textarea {...register(field.name)} rows={4} placeholder={field.placeholder} className="field resize-y" />
+        <textarea {...register(field.name)} rows={4} dir={dir} placeholder={field.placeholder} className="field resize-y" />
       );
 
     case "number":
@@ -149,6 +161,7 @@ export default function Field({ field }: { field: FieldDef }) {
             wrap(
               <textarea
                 rows={5}
+                dir={dir}
                 className="field resize-y"
                 placeholder={field.placeholder ?? "One item per line"}
                 value={((f.value as string[]) ?? []).join("\n")}
@@ -180,6 +193,7 @@ export default function Field({ field }: { field: FieldDef }) {
                       <input
                         key={c.key}
                         type={c.type === "number" ? "number" : "text"}
+                        dir={c.type === "number" ? undefined : dir}
                         placeholder={c.label}
                         value={item[c.key] ?? ""}
                         onChange={(e) =>
@@ -247,6 +261,6 @@ export default function Field({ field }: { field: FieldDef }) {
       );
 
     default:
-      return wrap(<input {...register(field.name)} placeholder={field.placeholder} className="field" />);
+      return wrap(<input {...register(field.name)} dir={dir} placeholder={field.placeholder} className="field" />);
   }
 }

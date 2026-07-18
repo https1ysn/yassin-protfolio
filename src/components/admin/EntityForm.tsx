@@ -5,8 +5,16 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Loader2 } from "lucide-react";
-import { buildSchema, type FieldDef } from "@/lib/admin-config";
+import { buildSchema, contentLocales, type FieldDef } from "@/lib/admin-config";
 import Field from "./Field";
+
+type ContentLang = "en" | (typeof contentLocales)[number];
+
+const langTabs: { id: ContentLang; label: string; flag: string }[] = [
+  { id: "en", label: "English", flag: "🇬🇧" },
+  { id: "fr", label: "Français", flag: "🇫🇷" },
+  { id: "ar", label: "العربية", flag: "🇲🇦" },
+];
 
 type Props = {
   fields: FieldDef[];
@@ -22,13 +30,17 @@ type Props = {
 /** Builds initial values so every field is controlled from the first render. */
 export function emptyValues(fields: FieldDef[], row?: Record<string, unknown> | null) {
   const values: Record<string, unknown> = {};
+  const init = (f: FieldDef, key: string) => {
+    const existing = row?.[key];
+    if (existing !== undefined && existing !== null) values[key] = existing;
+    else if (f.type === "boolean") values[key] = false;
+    else if (f.type === "number") values[key] = f.min ?? 0;
+    else if (f.type === "lines" || f.type === "objectList") values[key] = [];
+    else values[key] = "";
+  };
   for (const f of fields) {
-    const existing = row?.[f.name];
-    if (existing !== undefined && existing !== null) values[f.name] = existing;
-    else if (f.type === "boolean") values[f.name] = false;
-    else if (f.type === "number") values[f.name] = f.min ?? 0;
-    else if (f.type === "lines" || f.type === "objectList") values[f.name] = [];
-    else values[f.name] = "";
+    init(f, f.name);
+    if (f.localized) for (const lang of contentLocales) init(f, `${f.name}_${lang}`);
   }
   return values;
 }
@@ -50,7 +62,10 @@ export default function EntityForm({
   });
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [error, setError] = useState("");
+  const [lang, setLang] = useState<ContentLang>("en");
   const slugTouched = useRef(!!(defaultValues[slugFrom?.target ?? ""] as string));
+  const hasLocalized = fields.some((f) => f.localized);
+  const visibleFields = lang === "en" ? fields : fields.filter((f) => f.localized);
 
   const submit = methods.handleSubmit(async (values) => {
     setStatus("saving");
@@ -111,9 +126,46 @@ export default function EntityForm({
   return (
     <FormProvider {...methods}>
       <form onSubmit={submit} className="space-y-5">
-        {fields.map((f) => (
-          <Field key={f.name} field={f} />
+        {hasLocalized && (
+          <div className="flex items-center gap-3">
+            <div className="flex rounded-full border border-white/10 bg-white/[0.03] p-1" role="tablist" aria-label="Content language">
+              {langTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={lang === tab.id}
+                  onClick={() => setLang(tab.id)}
+                  className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                    lang === tab.id ? "bg-white/10 text-white" : "text-muted hover:text-white"
+                  }`}
+                >
+                  <span aria-hidden="true">{tab.flag}</span> {tab.label}
+                </button>
+              ))}
+            </div>
+            {lang !== "en" && (
+              <span className="text-[11px] text-muted/70">
+                Empty fields fall back to English on the site.
+              </span>
+            )}
+          </div>
+        )}
+
+        {visibleFields.map((f) => (
+          <Field
+            key={lang === "en" ? f.name : `${f.name}_${lang}`}
+            field={f}
+            suffix={lang === "en" ? undefined : lang}
+            rtl={lang === "ar"}
+          />
         ))}
+
+        {lang !== "en" && visibleFields.length === 0 && (
+          <p className="rounded-xl border border-dashed border-white/15 px-4 py-8 text-center text-xs text-muted">
+            This module has no translatable fields.
+          </p>
+        )}
 
         <div className="flex items-center gap-4 pt-2">
           <button

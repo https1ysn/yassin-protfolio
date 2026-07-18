@@ -30,29 +30,35 @@ export type FieldDef = {
   columns?: ObjectColumn[]; // objectList
   min?: number;
   max?: number;
+  /** field also has `<name>_fr` and `<name>_ar` variants (base column = English) */
+  localized?: boolean;
 };
+
+export const contentLocales = ["fr", "ar"] as const;
+
+function fieldSchema(f: FieldDef, required: boolean): z.ZodTypeAny {
+  switch (f.type) {
+    case "number":
+      return z.coerce.number().min(f.min ?? -1e9).max(f.max ?? 1e9);
+    case "boolean":
+      return z.boolean();
+    case "lines":
+      return z.array(z.string());
+    case "objectList":
+      return z.array(z.record(z.string(), z.union([z.string(), z.number()])));
+    default:
+      return required ? z.string().min(1, `${f.label} is required`) : z.string();
+  }
+}
 
 export function buildSchema(fields: FieldDef[]) {
   const shape: Record<string, z.ZodTypeAny> = {};
   for (const f of fields) {
-    let s: z.ZodTypeAny;
-    switch (f.type) {
-      case "number":
-        s = z.coerce.number().min(f.min ?? -1e9).max(f.max ?? 1e9);
-        break;
-      case "boolean":
-        s = z.boolean();
-        break;
-      case "lines":
-        s = z.array(z.string());
-        break;
-      case "objectList":
-        s = z.array(z.record(z.string(), z.union([z.string(), z.number()])));
-        break;
-      default:
-        s = f.required ? z.string().min(1, `${f.label} is required`) : z.string();
+    shape[f.name] = fieldSchema(f, !!f.required);
+    if (f.localized) {
+      // translations are never required — empty means "fall back to English"
+      for (const lang of contentLocales) shape[`${f.name}_${lang}`] = fieldSchema(f, false);
     }
-    shape[f.name] = s;
   }
   return z.object(shape);
 }
@@ -104,15 +110,15 @@ export const entities: EntityConfig[] = [
     fields: [
       { name: "name", label: "Full name", type: "text", required: true },
       { name: "initials", label: "Initials (logo)", type: "text", required: true },
-      { name: "role", label: "Current role", type: "text", required: true },
-      { name: "typing_roles", label: "Typing animation roles", type: "lines", help: "One role per line — the hero cycles through them." },
+      { name: "role", label: "Current role", type: "text", required: true, localized: true },
+      { name: "typing_roles", label: "Typing animation roles", type: "lines", help: "One role per line — the hero cycles through them.", localized: true },
       { name: "location", label: "Location", type: "text" },
       { name: "photo_url", label: "Profile photo", type: "image" },
       { name: "cover_image_url", label: "Cover image", type: "image", help: "Stored for future use — the current design doesn't display a cover." },
       { name: "biography", label: "Biography", type: "textarea", help: "Longer bio, stored alongside the About paragraphs." },
       { name: "cv_url", label: "Resume / CV (PDF)", type: "file" },
-      { name: "tagline", label: "Hero tagline", type: "textarea" },
-      { name: "availability", label: "Availability badge", type: "text" },
+      { name: "tagline", label: "Hero tagline", type: "textarea", localized: true },
+      { name: "availability", label: "Availability badge", type: "text", localized: true },
     ],
   },
   {
@@ -129,6 +135,7 @@ export const entities: EntityConfig[] = [
         name: "stats",
         label: "Stats counters",
         type: "objectList",
+        localized: true,
         columns: [
           { key: "value", label: "Value", type: "number" },
           { key: "suffix", label: "Suffix", type: "text" },
@@ -145,11 +152,12 @@ export const entities: EntityConfig[] = [
     kind: "singleton",
     icon: "BookOpen",
     fields: [
-      { name: "paragraphs", label: "Story paragraphs", type: "lines", help: "One paragraph per line." },
+      { name: "paragraphs", label: "Story paragraphs", type: "lines", help: "One paragraph per line.", localized: true },
       {
         name: "strengths",
         label: "Strength cards",
         type: "objectList",
+        localized: true,
         columns: [
           { key: "title", label: "Title", type: "text" },
           { key: "text", label: "Text", type: "text" },
@@ -168,13 +176,13 @@ export const entities: EntityConfig[] = [
     searchKeys: ["role", "company"],
     features: { duplicate: true, archive: true },
     fields: [
-      { name: "role", label: "Role", type: "text", required: true },
+      { name: "role", label: "Role", type: "text", required: true, localized: true },
       { name: "company", label: "Company", type: "text", required: true },
       { name: "logo_url", label: "Company logo", type: "image" },
       { name: "period", label: "Period", type: "text", placeholder: "Jan 2024 — Dec 2024" },
       { name: "location", label: "Location", type: "text" },
-      { name: "summary", label: "One-line summary", type: "textarea" },
-      { name: "bullets", label: "Achievements / responsibilities", type: "lines" },
+      { name: "summary", label: "One-line summary", type: "textarea", localized: true },
+      { name: "bullets", label: "Achievements / responsibilities", type: "lines", localized: true },
       { name: "tags", label: "Technologies / tags", type: "lines" },
     ],
   },
@@ -188,9 +196,9 @@ export const entities: EntityConfig[] = [
     listColumns: ["title", "organization"],
     searchKeys: ["title", "organization"],
     fields: [
-      { name: "title", label: "Title", type: "text", required: true },
+      { name: "title", label: "Title", type: "text", required: true, localized: true },
       { name: "organization", label: "Organization", type: "text" },
-      { name: "meta", label: "Date / location", type: "text" },
+      { name: "meta", label: "Date / location", type: "text", localized: true },
     ],
   },
   {
@@ -203,7 +211,7 @@ export const entities: EntityConfig[] = [
     listColumns: ["title"],
     searchKeys: ["title"],
     fields: [
-      { name: "title", label: "Category title", type: "text", required: true },
+      { name: "title", label: "Category title", type: "text", required: true, localized: true },
       { name: "icon", label: "Icon name (optional)", type: "text", help: "code / database / chart / palette" },
       { name: "color", label: "Accent color (optional)", type: "color" },
     ],
@@ -233,7 +241,7 @@ export const entities: EntityConfig[] = [
     icon: "HeartHandshake",
     listColumns: ["name"],
     searchKeys: ["name"],
-    fields: [{ name: "name", label: "Soft skill", type: "text", required: true }],
+    fields: [{ name: "name", label: "Soft skill", type: "text", required: true, localized: true }],
   },
   {
     slug: "languages",
@@ -245,8 +253,8 @@ export const entities: EntityConfig[] = [
     listColumns: ["name", "level_label"],
     searchKeys: ["name"],
     fields: [
-      { name: "name", label: "Language", type: "text", required: true },
-      { name: "level_label", label: "Level label", type: "text", placeholder: "Native / B1 / Fluent" },
+      { name: "name", label: "Language", type: "text", required: true, localized: true },
+      { name: "level_label", label: "Level label", type: "text", placeholder: "Native / B1 / Fluent", localized: true },
       { name: "percent", label: "Bar percent (0–100)", type: "number", min: 0, max: 100 },
     ],
   },
@@ -262,24 +270,24 @@ export const entities: EntityConfig[] = [
     features: { duplicate: true, archive: true, toggles: ["published", "featured"], gallery: true },
     slugFrom: { source: "title", target: "slug" },
     fields: [
-      { name: "title", label: "Title", type: "text", required: true },
+      { name: "title", label: "Title", type: "text", required: true, localized: true },
       { name: "slug", label: "Slug", type: "text", required: true, help: "Auto-generated from the title — edit if you want a custom one." },
-      { name: "category", label: "Category", type: "text" },
+      { name: "category", label: "Category", type: "text", localized: true },
       { name: "tags", label: "Tags", type: "lines" },
       { name: "short_description", label: "Short description", type: "textarea" },
-      { name: "long_description", label: "Why it was built (case study)", type: "textarea" },
-      { name: "problem", label: "Problem", type: "textarea" },
-      { name: "solution", label: "Solution / how it was built", type: "textarea" },
-      { name: "challenge", label: "Biggest technical challenge (case study)", type: "textarea" },
-      { name: "results", label: "Results (case study)", type: "textarea" },
-      { name: "lessons", label: "Lessons learned (case study)", type: "textarea" },
-      { name: "features", label: "Features", type: "lines" },
+      { name: "long_description", label: "Why it was built (case study)", type: "textarea", localized: true },
+      { name: "problem", label: "Problem", type: "textarea", localized: true },
+      { name: "solution", label: "Solution / how it was built", type: "textarea", localized: true },
+      { name: "challenge", label: "Biggest technical challenge (case study)", type: "textarea", localized: true },
+      { name: "results", label: "Results (case study)", type: "textarea", localized: true },
+      { name: "lessons", label: "Lessons learned (case study)", type: "textarea", localized: true },
+      { name: "features", label: "Features", type: "lines", localized: true },
       { name: "technologies", label: "Technologies", type: "lines" },
       { name: "cover_image_url", label: "Cover image", type: "image", help: "You can also pick one from the gallery below." },
       { name: "github_url", label: "GitHub URL", type: "text" },
       { name: "live_url", label: "Live demo URL", type: "text" },
       { name: "video_url", label: "Video (YouTube URL or upload)", type: "file", help: "Paste a YouTube link or upload a video file." },
-      { name: "link_label", label: "Link label (optional)", type: "text" },
+      { name: "link_label", label: "Link label (optional)", type: "text", localized: true },
       { name: "featured", label: "Featured", type: "boolean" },
       { name: "published", label: "Published", type: "boolean" },
       { name: "seo_title", label: "SEO title", type: "text" },
@@ -296,8 +304,8 @@ export const entities: EntityConfig[] = [
     listColumns: ["title"],
     searchKeys: ["title"],
     fields: [
-      { name: "title", label: "Service", type: "text", required: true },
-      { name: "description", label: "Description", type: "textarea" },
+      { name: "title", label: "Service", type: "text", required: true, localized: true },
+      { name: "description", label: "Description", type: "textarea", localized: true },
       { name: "icon", label: "Icon name (optional)", type: "text" },
     ],
   },
@@ -311,8 +319,8 @@ export const entities: EntityConfig[] = [
     listColumns: ["title", "issuer", "date_label"],
     searchKeys: ["title", "issuer"],
     fields: [
-      { name: "title", label: "Certificate", type: "text", required: true },
-      { name: "issuer", label: "Issuer", type: "text" },
+      { name: "title", label: "Certificate", type: "text", required: true, localized: true },
+      { name: "issuer", label: "Issuer", type: "text", localized: true },
       { name: "image_url", label: "Certificate image", type: "image" },
       { name: "date_label", label: "Issue date", type: "text", placeholder: "Sep 2024" },
       { name: "expiry_label", label: "Expiry date (optional)", type: "text", placeholder: "No expiry" },
