@@ -7,6 +7,7 @@ import {
   Loader2, Pencil, RefreshCw, Search, Trash2, Upload,
 } from "lucide-react";
 import { supabaseBrowser } from "@/lib/supabase/client";
+import { buildObjectPath, isReachable } from "@/components/admin/upload";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import { useToast } from "@/components/admin/Toast";
 
@@ -77,12 +78,24 @@ export default function MediaLibrary() {
     setBusy(true);
     let okCount = 0;
     for (const file of Array.from(list)) {
-      const safe = replaceName ?? `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
-      const { error } = await db.storage
-        .from("media")
-        .upload(fullPath(safe), file, { upsert: !!replaceName });
-      if (error) toast.error(`${file.name}: ${error.message}`);
-      else okCount++;
+      const objectPath = replaceName ? fullPath(replaceName) : buildObjectPath(file.name, folder);
+      const { error } = await db.storage.from("media").upload(objectPath, file, {
+        upsert: !!replaceName,
+        contentType: file.type || undefined,
+        cacheControl: "3600",
+      });
+      if (error) {
+        toast.error(`${file.name}: ${error.message}`);
+        continue;
+      }
+      // confirm the object is really served before reporting success
+      const publicUrl = db.storage.from("media").getPublicUrl(objectPath).data.publicUrl;
+      if (!(await isReachable(publicUrl))) {
+        await db.storage.from("media").remove([objectPath]);
+        toast.error(`${file.name}: upload did not persist in storage`);
+        continue;
+      }
+      okCount++;
     }
     setBusy(false);
     if (okCount > 0) toast.success(replaceName ? "File replaced" : `Uploaded ${okCount} file${okCount > 1 ? "s" : ""}`);
@@ -308,7 +321,7 @@ export default function MediaLibrary() {
       <ConfirmDialog
         open={!!deleting}
         title="Delete this file?"
-        message="Anything on the website using this file will show a broken link. This cannot be undone."
+        message="If this file is used by a certificate, project or profile, that image will stop appearing on the site — clear or replace the field there too. This cannot be undone."
         onConfirm={remove}
         onCancel={() => setDeleting(null)}
       />

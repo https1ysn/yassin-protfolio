@@ -1,11 +1,40 @@
 "use client";
 
+import { useState } from "react";
 import { Award, ArrowUpRight, GraduationCap, MapPin } from "lucide-react";
 import { useContent } from "@/components/ContentContext";
 import { useT } from "@/components/I18nContext";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import TiltCard from "@/components/ui/TiltCard";
+
+/**
+ * Certificate artwork revealed only on hover: fades in behind the card content
+ * with a gentle zoom-out, so the card stays clean at rest. Renders nothing when
+ * there is no image — or when the URL is dead — so the card never breaks.
+ */
+function CertificateImage({ src, title }: { src?: string; title: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) return null;
+
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100"
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className="h-full w-full scale-110 object-cover transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-100"
+      />
+      {/* scrim keeps the title, issuer and buttons readable over the artwork */}
+      <span className="absolute inset-0 bg-gradient-to-t from-card via-card/92 to-card/75" />
+    </span>
+  );
+}
 
 export default function Education() {
   const { education, certificates } = useContent();
@@ -65,25 +94,9 @@ export default function Education() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {certificates.map((c, i) => (
                 <Reveal key={c.title} delay={0.08 + i * 0.06} className="h-full">
-                  <div className="card-surface card-hover group flex h-full flex-col overflow-hidden rounded-2xl p-5 hover:!border-amber-300/30 hover:!shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_1px_2px_rgba(0,0,0,0.5),0_24px_55px_-18px_rgba(0,0,0,0.7),0_16px_50px_-20px_rgba(251,191,36,0.25)]">
-                    {c.image && (
-                      <a
-                        href={c.url || c.image}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="-mx-5 -mt-5 mb-4 block"
-                        aria-label={`${c.title} — certificate image`}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={c.image}
-                          alt={`${c.title} certificate`}
-                          loading="lazy"
-                          className="h-32 w-full border-b border-white/[0.07] object-cover transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-                        />
-                      </a>
-                    )}
-                    <div className="flex items-start justify-between gap-3">
+                  <div className="card-surface card-hover group relative flex h-full flex-col overflow-hidden rounded-2xl p-5 hover:!border-amber-300/30 hover:!shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_1px_2px_rgba(0,0,0,0.5),0_24px_55px_-18px_rgba(0,0,0,0.7),0_16px_50px_-20px_rgba(251,191,36,0.25)]">
+                    <CertificateImage src={c.image} title={c.title} />
+                    <div className="relative flex items-start justify-between gap-3">
                       <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 text-amber-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[360deg]">
                         <Award size={16} />
                       </span>
@@ -93,9 +106,11 @@ export default function Education() {
                         </span>
                       )}
                     </div>
-                    <p className="mt-4 font-display text-sm font-semibold leading-snug tracking-tight">{c.title}</p>
-                    <p className="mt-1.5 text-xs text-muted">{c.issuer}</p>
-                    <div className="mt-auto pt-4">
+                    <p className="relative mt-4 font-display text-sm font-semibold leading-snug tracking-tight">
+                      {c.title}
+                    </p>
+                    <p className="relative mt-1.5 text-xs text-muted">{c.issuer}</p>
+                    <div className="relative mt-auto pt-4">
                       {c.url ? (
                         <a
                           href={c.url}
