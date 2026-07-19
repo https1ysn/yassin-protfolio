@@ -184,6 +184,7 @@ export const projects: {
   linkLabel: string;
   link: string;
   featured?: boolean;
+  cover?: string;
   why?: string;
   challenge?: string;
   results?: string;
@@ -265,36 +266,41 @@ export const services = [
   },
 ];
 
-export const certificates: { title: string; issuer: string; date: string; url: string }[] = [
+export const certificates: { title: string; issuer: string; date: string; url: string; image: string }[] = [
   {
     title: "International Diploma — Web Development & Programming",
     issuer: "Smart International Academy, London",
     date: "",
     url: "",
+    image: "",
   },
   {
     title: "International Diploma — Applied Accounting",
     issuer: "Smart International Academy, London",
     date: "",
     url: "",
+    image: "",
   },
   {
     title: "Training Attestation — Web Development & Programming",
     issuer: "Centre Atlantique de Formation",
     date: "Dec 2024",
     url: "",
+    image: "",
   },
   {
     title: "Training Attestation — Practical Accounting with SAGE",
     issuer: "Centre Atlantique de Formation",
     date: "Jul 2024",
     url: "",
+    image: "",
   },
   {
     title: "Course Certificate — Front-End Development",
     issuer: "Sololearn",
     date: "Sep 2024",
     url: "",
+    image: "",
   },
 ];
 

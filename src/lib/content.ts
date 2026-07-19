@@ -89,11 +89,11 @@ export async function getSiteContent(locale: Locale = "en"): Promise<SiteContent
 
     return {
       profile: {
-        name: p.name,
+        name: loc(p, "name", locale),
         initials: p.initials,
         role: loc(p, "role", locale),
         typingRoles: locArr<string>(p, "typing_roles", locale),
-        location: p.location,
+        location: loc(p, "location", locale),
         email: contact?.email ?? fp.email,
         phone: contact?.phone ?? fp.phone,
         displayPhone: contact?.display_phone ?? fp.displayPhone,
@@ -105,6 +105,8 @@ export async function getSiteContent(locale: Locale = "en"): Promise<SiteContent
         tagline: loc(p, "tagline", locale),
         availability: loc(p, "availability", locale),
       },
+      heroLine1: hero ? loc(hero, "headline_line1", locale) || fallbackContent.heroLine1 : fallbackContent.heroLine1,
+      heroLine2: hero ? loc(hero, "headline_line2", locale) || fallbackContent.heroLine2 : fallbackContent.heroLine2,
       stats: hero ? locArr(hero, "stats", locale) as SiteContent["stats"] : fallbackContent.stats,
       aboutParagraphs: about ? locArr<string>(about, "paragraphs", locale) : fallbackContent.aboutParagraphs,
       strengths: about
@@ -116,17 +118,17 @@ export async function getSiteContent(locale: Locale = "en"): Promise<SiteContent
           role: loc(e, "role", locale),
           company: e.company,
           logo: e.logo_url ?? "",
-          period: e.period,
-          location: e.location,
+          period: loc(e, "period", locale),
+          location: loc(e, "location", locale),
           summary: loc(e, "summary", locale),
           bullets: locArr<string>(e, "bullets", locale),
-          tags: (e.tags as string[]) ?? [],
+          tags: locArr<string>(e, "tags", locale),
         })),
       skillGroups: rows(catQ).map((c) => ({
         title: loc(c, "title", locale),
         skills: skillsByCat
           .filter((sk) => sk.category_id === c.id)
-          .map((sk) => ({ name: sk.name, level: sk.level })),
+          .map((sk) => ({ name: loc(sk, "name", locale), level: sk.level })),
       })),
       softSkills: rows(softQ).map((x) => loc(x, "name", locale)),
       languages: rows(langQ).map((l) => ({
@@ -142,7 +144,8 @@ export async function getSiteContent(locale: Locale = "en"): Promise<SiteContent
         problem: loc(pr, "problem", locale),
         solution: loc(pr, "solution", locale),
         features: locArr<string>(pr, "features", locale),
-        tech: (pr.technologies as string[]) ?? [],
+        tech: locArr<string>(pr, "technologies", locale),
+        cover: pr.cover_image_url ?? "",
         linkLabel:
           loc(pr, "link_label", locale) ||
           (pr.live_url ? "View live" : pr.github_url ? "View code" : "Details on request"),
@@ -159,14 +162,15 @@ export async function getSiteContent(locale: Locale = "en"): Promise<SiteContent
       })),
       education: rows(eduQ).map((ed) => ({
         title: loc(ed, "title", locale),
-        org: ed.organization,
+        org: loc(ed, "organization", locale),
         meta: loc(ed, "meta", locale),
       })),
       certificates: rows(certQ).map((c) => ({
         title: loc(c, "title", locale),
         issuer: loc(c, "issuer", locale),
-        date: c.date_label ?? "",
+        date: loc(c, "date_label", locale),
         url: c.url ?? "",
+        image: c.image_url ?? "",
       })),
       socialLinks: socials,
       settings: s
@@ -189,19 +193,20 @@ export async function getSiteContent(locale: Locale = "en"): Promise<SiteContent
   }
 }
 
-/** SEO row for generateMetadata, with fallback. */
-export async function getSeo(): Promise<SeoData> {
+/** SEO row for generateMetadata, localized with the same fallback chain. */
+export async function getSeo(locale: Locale = "en"): Promise<SeoData> {
   if (!isSupabaseConfigured()) return defaultSeo;
   try {
     const db = await supabaseServer();
     const { data } = await db.from("seo").select("*").eq("id", 1).maybeSingle();
     if (!data) return defaultSeo;
+    const keywords = locArr<string>(data, "keywords", locale);
     return {
-      title: data.title || defaultSeo.title,
-      description: data.description || defaultSeo.description,
-      keywords: (data.keywords as string[])?.length ? (data.keywords as string[]) : defaultSeo.keywords,
-      ogTitle: data.og_title,
-      ogDescription: data.og_description,
+      title: loc(data, "title", locale) || defaultSeo.title,
+      description: loc(data, "description", locale) || defaultSeo.description,
+      keywords: keywords.length ? keywords : defaultSeo.keywords,
+      ogTitle: loc(data, "og_title", locale),
+      ogDescription: loc(data, "og_description", locale),
       ogImageUrl: data.og_image_url,
       twitterCard: data.twitter_card || "summary_large_image",
       robots: data.robots || "index, follow",

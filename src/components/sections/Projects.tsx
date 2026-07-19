@@ -73,11 +73,13 @@ function ProjectCover({
   title,
   featured,
   featuredLabel,
+  cover,
 }: {
   index: number;
   title: string;
   featured?: boolean;
   featuredLabel?: string;
+  cover?: string;
 }) {
   const hueShifts = [
     "from-indigo-accent/50 via-violet-accent/30 to-cyan-accent/40",
@@ -86,7 +88,17 @@ function ProjectCover({
   ];
   return (
     <div className="relative h-48 overflow-hidden" role="img" aria-label={`${title} cover artwork`}>
-      {/* inner layer scales like an image zoom while the frame stays fixed */}
+      {/* real uploaded cover when available; generative artwork otherwise.
+          The inner layer scales like an image zoom while the frame stays fixed. */}
+      {cover ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={cover}
+          alt={`${title} cover`}
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.07]"
+        />
+      ) : (
       <div
         className={`absolute inset-0 bg-gradient-to-br ${hueShifts[index % 3]} transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.07]`}
       >
@@ -100,6 +112,7 @@ function ProjectCover({
           className="absolute left-1/2 top-1/2 h-64 w-24 -translate-x-1/2 -translate-y-1/2 rotate-[24deg] rounded-full border border-white/15 transition-transform duration-700 group-hover:rotate-[40deg]"
         />
       </div>
+      )}
       <span className="absolute bottom-4 left-4 rounded-full bg-black/45 px-3 py-1.5 text-[11px] font-semibold tabular-nums text-white/90 backdrop-blur">
         {String(index + 1).padStart(2, "0")}
       </span>
@@ -137,7 +150,13 @@ export default function Projects() {
                     : "card-surface"
                 }`}
               >
-                <ProjectCover index={i} title={p.title} featured={p.featured} featuredLabel={t("projects.featured")} />
+                <ProjectCover
+                  index={i}
+                  title={p.title}
+                  featured={p.featured}
+                  featuredLabel={t("projects.featured")}
+                  cover={p.cover}
+                />
                 <div className="flex h-full flex-col p-6 md:p-7">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-accent/80">
                     {p.category}

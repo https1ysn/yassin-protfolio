@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Inter, Sora, Tajawal } from "next/font/google";
 import { getSeo } from "@/lib/content";
+import { isSupabaseConfigured, supabaseServer } from "@/lib/supabase/server";
 import { getMessages, isLocale, localeMeta, type Locale } from "@/lib/i18n";
 import { I18nProvider } from "@/components/I18nContext";
 import "../globals.css";
@@ -23,12 +24,25 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  const [seo, messages] = await Promise.all([getSeo(), getMessages(locale)]);
+  const [seo, messages] = await Promise.all([getSeo(locale), getMessages(locale)]);
 
-  // The database drives SEO for English; fr/ar use the localized bundle.
+  // Localized SEO from the CMS (locale → English fallback); the static bundle
+  // is the last resort when the database has no description at all.
   const title = seo.title;
-  const description = locale === "en" ? seo.description : (messages.meta?.description ?? seo.description);
+  const description = seo.description || (messages.meta?.description ?? "");
   const base = seo.canonicalUrl ? seo.canonicalUrl.replace(/\/(en|fr|ar)?\/?$/, "") : "";
+
+  // custom favicon uploaded in Admin → Settings (falls back to the bundled icon)
+  let faviconUrl = "";
+  if (isSupabaseConfigured()) {
+    try {
+      const db = await supabaseServer();
+      const { data } = await db.from("site_settings").select("favicon_url").eq("id", 1).maybeSingle();
+      faviconUrl = data?.favicon_url ?? "";
+    } catch {
+      /* bundled icon.svg remains the fallback */
+    }
+  }
 
   return {
     title,
@@ -36,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: seo.keywords,
     authors: [{ name: "Yassine El Biad" }],
     robots: seo.robots,
+    icons: faviconUrl ? { icon: faviconUrl } : undefined,
     alternates: {
       canonical: base ? `${base}/${locale}` : `/${locale}`,
       languages: {

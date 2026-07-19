@@ -61,7 +61,7 @@ function StaggeredWord({ word, delay, className = "" }: { word: string; delay: n
 }
 
 export default function Hero() {
-  const { profile, settings } = useContent();
+  const { profile, settings, heroLine1, heroLine2 } = useContent();
   const t = useT();
   const typed = useTyping(profile.typingRoles);
   const sectionRef = useRef<HTMLElement>(null);
@@ -107,9 +107,9 @@ export default function Hero() {
           </motion.span>
 
           <h1 className="mt-7 font-display text-[clamp(3.2rem,9vw,5.6rem)] font-bold leading-[1.02] tracking-[-0.03em]">
-            <StaggeredWord word="Yassine" delay={0.55} />
+            <StaggeredWord word={heroLine1} delay={0.55} />
             <br />
-            <StaggeredWord word="El Biad" delay={0.68} className="gradient-text animate-gradient" />
+            <StaggeredWord word={heroLine2} delay={0.68} className="gradient-text animate-gradient" />
           </h1>
 
           <motion.p

@@ -42,6 +42,8 @@ export type SeoData = {
 
 export type SiteContent = {
   profile: typeof fallbackProfile;
+  heroLine1: string;
+  heroLine2: string;
   stats: typeof fallbackStats;
   aboutParagraphs: string[];
   strengths: typeof fallbackStrengths;
@@ -91,6 +93,8 @@ export const defaultSeo: SeoData = {
 
 export const fallbackContent: SiteContent = {
   profile: fallbackProfile,
+  heroLine1: "Yassine",
+  heroLine2: "El Biad",
   stats: fallbackStats,
   aboutParagraphs: fallbackAbout,
   strengths: fallbackStrengths,
