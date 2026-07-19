@@ -48,7 +48,10 @@
     "description": "International diplomas, hands-on training, and certificates — the formal foundation under the practical experience.",
     "certificates": "Certificates",
     "verify": "Verify credential",
-    "onRequest": "Original document available on request"
+    "onRequest": "Original document available on request",
+    "showCertificate": "View certificate",
+    "openFullSize": "Click to open full size",
+    "closePreview": "Close preview"
   },
   "skills": {
     "eyebrow": "Skills",

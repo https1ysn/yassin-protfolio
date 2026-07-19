@@ -48,7 +48,10 @@
     "description": "Diplômes internationaux, formations pratiques et certificats — la base formelle derrière l'expérience de terrain.",
     "certificates": "Certificats",
     "verify": "Vérifier le certificat",
-    "onRequest": "Document original disponible sur demande"
+    "onRequest": "Document original disponible sur demande",
+    "showCertificate": "Voir le certificat",
+    "openFullSize": "Cliquez pour ouvrir en grand",
+    "closePreview": "Fermer l'aperçu"
   },
   "skills": {
     "eyebrow": "Compétences",
