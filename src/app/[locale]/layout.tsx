@@ -14,6 +14,9 @@ const tajawal = Tajawal({
   weight: ["400", "500", "700", "800"],
   variable: "--font-tajawal",
   display: "swap",
+  // Only the Arabic locale renders in Tajawal — don't make en/fr visitors
+  // preload four Arabic weights they will never paint.
+  preload: false,
 });
 
 type Props = { children: React.ReactNode; params: Promise<{ locale: string }> };
@@ -32,6 +35,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = seo.description || (messages.meta?.description ?? "");
   const base = seo.canonicalUrl ? seo.canonicalUrl.replace(/\/(en|fr|ar)?\/?$/, "") : "";
 
+  /**
+   * hreflang/canonical/OG must be absolute or search engines ignore them.
+   * Resolution order: canonical URL from the CMS → NEXT_PUBLIC_SITE_URL →
+   * Vercel's deployment URL → localhost for development.
+   */
+  const origin =
+    base ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000");
+
   // custom favicon uploaded in Admin → Settings (falls back to the bundled icon)
   let faviconUrl = "";
   if (isSupabaseConfigured()) {
@@ -45,6 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
+    metadataBase: new URL(origin),
     title,
     description,
     keywords: seo.keywords,
@@ -52,12 +68,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     robots: seo.robots,
     icons: faviconUrl ? { icon: faviconUrl } : undefined,
     alternates: {
-      canonical: base ? `${base}/${locale}` : `/${locale}`,
+      canonical: `${origin}/${locale}`,
       languages: {
-        en: base ? `${base}/en` : "/en",
-        fr: base ? `${base}/fr` : "/fr",
-        ar: base ? `${base}/ar` : "/ar",
-        "x-default": base ? `${base}/` : "/",
+        en: `${origin}/en`,
+        fr: `${origin}/fr`,
+        ar: `${origin}/ar`,
+        // x-default must point at an indexable page — "/" is the noindex
+        // language chooser, so English is the canonical default.
+        "x-default": `${origin}/en`,
       },
     },
     openGraph: {
@@ -99,8 +117,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages(locale as Locale);
   const dir = localeMeta[locale as Locale].dir;
 
+  const fontVars = `${inter.variable} ${sora.variable}${locale === "ar" ? ` ${tajawal.variable}` : ""}`;
+
   return (
-    <html lang={locale} dir={dir} className={`${inter.variable} ${sora.variable} ${tajawal.variable}`}>
+    <html lang={locale} dir={dir} className={fontVars}>
       <body className="noise">
         <a href="#home" className="skip-link">
           {locale === "fr" ? "Aller au contenu" : locale === "ar" ? "تخطّي إلى المحتوى" : "Skip to content"}

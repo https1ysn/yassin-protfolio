@@ -24,6 +24,7 @@ export default function EasterEgg() {
 
   useEffect(() => {
     let progress = 0;
+    let timer: ReturnType<typeof setTimeout>;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === KONAMI[progress]) {
         progress += 1;
@@ -31,7 +32,7 @@ export default function EasterEgg() {
           progress = 0;
           setParty(true);
           document.body.classList.add("party-mode");
-          setTimeout(() => {
+          timer = setTimeout(() => {
             document.body.classList.remove("party-mode");
             setParty(false);
           }, 10000);
@@ -41,7 +42,11 @@ export default function EasterEgg() {
       }
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      clearTimeout(timer);
+      document.body.classList.remove("party-mode");
+    };
   }, []);
 
   return (

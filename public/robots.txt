@@ -1,2 +1,6 @@
 User-agent: *
 Allow: /
+
+# The dashboard is auth-gated; keep it out of search results entirely.
+Disallow: /admin
+Disallow: /admin/
